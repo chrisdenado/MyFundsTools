@@ -113,8 +113,13 @@ def main(argv):
     split_char = '/'
     if sys.platform == 'win32':
         split_char = '\\'
-    fundFile = path + split_char + "funds.json"
-    setFile = path + split_char + "setting.json"
+    
+#    fundFile = path + split_char + "funds.json"
+#    setFile = path + split_char + "setting.json"
+    
+    fundFile = "/root/MyFundsTools/funds.json"
+    setFile = "/root/MyFundsTools/setting.json"
+    
     print(file_str, setFile)
     
     night_check = False
