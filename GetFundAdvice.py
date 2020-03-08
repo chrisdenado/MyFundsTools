@@ -1,6 +1,7 @@
 import requests
 import json
 import sys
+import os
 from operator import itemgetter, attrgetter
 from email_send import send_email
 
@@ -103,11 +104,20 @@ def BuildUpContent(funds_datas, owner_funds, fund_earn_map):
 
 
 def main(argv):
+    path = ""
+    path = os.path.abspath(path)
+    
+    split_char = '/'
+    if sys.platform == 'win32':
+        split_char = '\\'
+    file_str = path + split_char + "funds.json"
+    print(file_str)
+    
     night_check = False
     if (len(argv) > 1 and argv[1] == "1"):
         night_check = True #晚上十点的那次查询
     
-    funds, from_addr, password, receive_email = ReadJson('./funds.json')
+    funds, from_addr, password, receive_email = ReadJson(file_str)
 
     funds_datas, owner_funds = PraseFundsData(funds)
     
