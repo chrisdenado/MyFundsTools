@@ -120,13 +120,13 @@ def main(argv):
     fundFile = "/root/MyFundsTools/funds.json"
     setFile = "/root/MyFundsTools/setting.json"
     
-    print(file_str, setFile)
+    print(fundFile, setFile)
     
     night_check = False
     if (len(argv) > 1 and argv[1] == "1"):
         night_check = True #晚上十点的那次查询
     
-    funds, from_addr, password, receive_email = ReadJson(file_str, setFile)
+    funds, from_addr, password, receive_email = ReadJson(fundFile, setFile)
 
     funds_datas, owner_funds = PraseFundsData(funds)
     
