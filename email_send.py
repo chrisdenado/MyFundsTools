@@ -37,7 +37,8 @@ def send_email(from_addr, password, content, receive_email):
     smtp_server = 'smtp.163.com' #SMTP服务器地址
     
     import smtplib
-    server = smtplib.SMTP(smtp_server, 25) # SMTP协议默认端口是25
+    #server = smtplib.SMTP(smtp_server, 465) # SMTP协议默认端口是25
+    server = smtplib.SMTP_SSL(smtp_server, 465)# SMTP SSL协议默认端口是25
     server.set_debuglevel(1)
     server.login(from_addr, password)
     server.sendmail(from_addr, receive_email, msg.as_string())
