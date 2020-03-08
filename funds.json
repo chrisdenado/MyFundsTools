@@ -1,13 +1,10 @@
 {
-"from_addr":"",
-"password":"",
-"receive_email":"",
 "funds":[
 	{
 	"Name": "招商白酒指数",
 	"Code":"161725",
 	"WantedValue":"0.90",
-	"OwnerBY":""
+	"OwnerBY":[{"OwnName":"qp", "Cost":"0.9289"}]
 	},
 	{
 	"Name": "景顺新兴成长",
@@ -46,10 +43,16 @@
 	"OwnerBY":[{"OwnName":"cr", "Cost":"2.2407"}]
 	},
 	{
+	"Name": "天弘沪深300ETF联接C",
+	"Code":"005918",
+	"WantedValue":"1.07, 1.0",
+	"OwnerBY":[{"OwnName":"qp", "Cost":"1.0739"}]
+	},
+	{
 	"Name": "天弘中证银行C",
 	"Code":"001595",
 	"WantedValue":"1.14, 1.09",
-	"OwnerBY":[{"OwnName":"cr", "Cost":"1.1615"}, {"OwnName":"qp", "Cost":"1.01"}]
+	"OwnerBY":[{"OwnName":"cr", "Cost":"1.1615"}, {"OwnName":"qp", "Cost":"1.1590"}]
 	},
 	{
 	"Name": "国泰国证房地产",

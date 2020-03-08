@@ -6,15 +6,18 @@ from operator import itemgetter, attrgetter
 from email_send import send_email
 
 #从json文件中读取邮箱信息，以及关注基金的数据
-def ReadJson(file):
-    with open( file, encoding='utf-8') as f:
-        json_data = json.load(f)
+def ReadJson(fundFile, setFile):
+    with open( fundFile, encoding='utf-8') as f:
+        fund_json_data = json.load(f)
         f.close()
-
-    from_addr = json_data["from_addr"]
-    password = json_data["password"]
-    receive_email = json_data["receive_email"].split(",")
-    funds = json_data["funds"] #关心的基金数据
+    with open( setFile, encoding='utf-8') as f:
+        set_json_data = json.load(f)
+        f.close()
+    
+    from_addr = set_json_data["from_addr"]
+    password = set_json_data["password"]
+    receive_email = set_json_data["receive_email"].split(",")
+    funds = fund_json_data["funds"] #关心的基金数据
     
     return funds, from_addr, password, receive_email
 
@@ -110,14 +113,15 @@ def main(argv):
     split_char = '/'
     if sys.platform == 'win32':
         split_char = '\\'
-    file_str = path + split_char + "funds.json"
-    print(file_str)
+    fundFile = path + split_char + "funds.json"
+    setFile = path + split_char + "setting.json"
+    print(file_str, setFile)
     
     night_check = False
     if (len(argv) > 1 and argv[1] == "1"):
         night_check = True #晚上十点的那次查询
     
-    funds, from_addr, password, receive_email = ReadJson(file_str)
+    funds, from_addr, password, receive_email = ReadJson(file_str, setFile)
 
     funds_datas, owner_funds = PraseFundsData(funds)
     
