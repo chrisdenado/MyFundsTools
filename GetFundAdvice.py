@@ -130,7 +130,7 @@ def main(argv):
 
     funds_datas, owner_funds = PraseFundsData(funds)
     
-    fund_earn_map = GetFundsInfo(funds_datas, True)
+    fund_earn_map = GetFundsInfo(funds_datas, night_check)
     
     content = BuildUpContent(funds_datas, owner_funds, fund_earn_map)
     
