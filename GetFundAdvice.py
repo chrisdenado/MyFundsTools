@@ -2,8 +2,10 @@ import requests
 import json
 import sys
 import os
+import heapq
 from operator import itemgetter, attrgetter
 from email_send import send_email
+from trans_all_funds import TraverseAllFunds
 
 #从json文件中读取邮箱信息，以及关注基金的数据
 def ReadJson(fundFile, setFile):
@@ -74,13 +76,12 @@ def CalRate(pre_val, cur_val):
     c_val = float(cur_val)
     rate = float( '%0.4f' %((c_val - p_val) / p_val * 100))
     return str(rate)
-    
 
 #用于组装邮件发送数据
 #funds_datas 基金的基本信息
 #owner_funds 个人持有基金，单独输出，便于查看 <持有人, map(持有基金的编号, 持仓成本)>
 #fund_earn_map 所有关注基金的情况, 按涨跌幅度由低向高排列
-def BuildUpContent(funds_datas, owner_funds, fund_earn_map):
+def BuildUpContent(funds_datas, owner_funds, fund_earn_map, down_top_10, up_top_10):
     content = ""
     split_line = "**********************{0}**********************\n"
     content_format = "{0}-{1}; 估值({2}),涨幅({3}%); 成本价({4}),收益率({5}%); 期望低价[{6}]\n"#编号-名称-现值-涨幅, (持仓价-收益率), [期待的低价]
@@ -102,23 +103,28 @@ def BuildUpContent(funds_datas, owner_funds, fund_earn_map):
         
         content += content_format.format(data["Code"], data["Name"], data["CurValue"], data["EarningRate"],\
                                          "", "", data["WantedValue"])#持仓成本价和收益率为空
-    
+
+    #跌幅榜前十
+    content = content + split_line.format("跌幅榜单")
+    content_format = "{0}-{1}; 估值({2}),跌幅({3}%); 估算时间({4})\n"  # 编号-名称-现值-涨幅-估算时间
+    for data in down_top_10:
+        content += content_format.format(data["Code"], data["Name"], data["CurValue"], data["EarningRate"], data["Time"])
+
+    # 涨幅榜前十
+    content = content + split_line.format("涨幅榜单")
+    content_format = "{0}-{1}; 估值({2}),涨幅({3}%); 估算时间({4})\n"  # 编号-名称-现值-涨幅-估算时间
+    for data in up_top_10:
+        content += content_format.format(data["Code"], data["Name"], data["CurValue"], data["EarningRate"], data["Time"])
+
     return content
 
 
 def main(argv):
-    path = ""
-    path = os.path.abspath(path)
-    
-    split_char = '/'
-    if sys.platform == 'win32':
-        split_char = '\\'
-    
-#    fundFile = path + split_char + "funds.json"
-#    setFile = path + split_char + "setting.json"
-    
-    fundFile = "/root/MyFundsTools/funds.json"
-    setFile = "/root/MyFundsTools/setting.json"
+    fundFile = "C:\\Users\\crxyy\\Desktop\\FundCheck\\funds.json"
+    setFile = "C:\\Users\\crxyy\\Desktop\\FundCheck\\setting.json"
+
+#    fundFile = "/root/MyFundsTools/funds.json"
+#    setFile = "/root/MyFundsTools/setting.json"
     
     print(fundFile, setFile)
     
@@ -131,9 +137,13 @@ def main(argv):
     funds_datas, owner_funds = PraseFundsData(funds)
     
     fund_earn_map = GetFundsInfo(funds_datas, night_check)
-    
-    content = BuildUpContent(funds_datas, owner_funds, fund_earn_map)
-    
+
+    down_top_10 = []
+    up_top_10 = []
+    TraverseAllFunds(down_top_10, up_top_10)#遍历所有基金净值
+
+    content = BuildUpContent(funds_datas, owner_funds, fund_earn_map, down_top_10, up_top_10)
+
     send_email(from_addr, password, content, receive_email)
     
     
